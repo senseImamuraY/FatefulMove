@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
 
 // 駒のタイプ
 public enum UnitType
@@ -84,26 +83,29 @@ public class UnitController : MonoBehaviour
     {
         Player = player;
         UnitType = (UnitType)unittype;
-        // 取られたときに元に戻すために使う
+        // 取られた時元に戻るよう
         OldUnitType = (UnitType)unittype;
+        // 場所の初期値
         FieldStatus = FieldStatus.OnBard;
-
+        // 角度と場所
         transform.eulerAngles = getDefaultAngles(player);
         Move(tile, pos);
     }
 
+    // 指定されたプレイヤー番号の向きを返す
     Vector3 getDefaultAngles(int player)
     {
         return new Vector3(90, player * 180, 0);
     }
 
+    // 移動処理
     public void Move(GameObject tile, Vector2Int tileindex)
     {
         // 新しい場所へ移動する
         Vector3 pos = tile.transform.position;
         pos.y = UnSelectUnitY;
         transform.position = pos;
-
+        // インデックス更新
         Pos = tileindex;
     }
 
@@ -111,7 +113,7 @@ public class UnitController : MonoBehaviour
     public void Select(bool select = true)
     {
         Vector3 pos = transform.position;
-        bool iskinematic = select; 
+        bool iskinematic = select;
 
         if (select)
         {
@@ -132,5 +134,57 @@ public class UnitController : MonoBehaviour
 
         GetComponent<Rigidbody>().isKinematic = iskinematic;
         transform.position = pos;
+    }
+
+    public List<Vector2Int> GetMovableTiles(UnitController[,] units, bool checkotherunit = true)
+    {
+        List<Vector2Int> ret = new List<Vector2Int>();
+
+        ret = getMovableTiles(units, UnitType.Hu);
+
+        return ret;
+    }
+
+    List<Vector2Int> getMovableTiles(UnitController[,] units, UnitType unittype)
+    {
+        List<Vector2Int> ret = new List<Vector2Int>();
+
+        if (unittype == UnitType.Hu)
+        {
+            int dir = (Player == 0) ? 1 : -1;
+
+            List<Vector2Int> vec = new List<Vector2Int>()
+            {
+                new Vector2Int(0, 1* dir)
+            };
+
+            foreach (var item in vec)
+            {
+                Vector2Int checkpos = Pos + item;
+                if (!isCheckable(units, checkpos) || isFriendlyUnit(units[checkpos.x, checkpos.y]))
+                {
+                    continue;
+                }
+
+                ret.Add(checkpos);
+            }
+        }
+
+        return ret;
+
+        bool isCheckable(UnitController[,] ary, Vector2Int idx)
+        {
+            if(idx.x < 0 || ary.GetLength(0) <= idx.x || idx.y < 0 || ary.GetLength(0) <= idx.y)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        bool isFriendlyUnit(UnitController unit)
+        {
+            if (unit && Player == unit.Player) return true;
+            return false;
+        }
     }
 }
