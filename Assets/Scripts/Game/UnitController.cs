@@ -64,16 +64,16 @@ public class UnitController : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
-    {
+    //void Start()
+    //{
 
-    }
+    //}
 
-    // Update is called once per frame
-    void Update()
-    {
+    //// Update is called once per frame
+    //void Update()
+    //{
 
-    }
+    //}
 
     // èâä˙ê›íË
     public void Init(int player, int unittype, GameObject tile, Vector2Int pos)

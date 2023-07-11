@@ -266,6 +266,7 @@ public class GameSceneDirector : MonoBehaviour
         }
 
         // TurnChangeからはじめる場合−1
+        // これでPlayer（0）から始まるようになる
         nowPlayer = -1;
 
         // 初回モード
@@ -673,14 +674,14 @@ public class GameSceneDirector : MonoBehaviour
         {
             if (1 > item.Value.Count) continue;
 
-            // 置く場所
-            GameObject tile = unitTiles[player][tilecount++];
+            // 置く場所（駒大）
+            GameObject komadai = unitTiles[player][tilecount++];
 
             // 非表示にしていたタイルを表示する
-            tile.SetActive(true);
+            komadai.SetActive(true);
 
             // 所持個数の表示
-            tile.transform.GetChild(0).gameObject.GetComponent<TextMeshPro>().text
+            komadai.transform.GetChild(0).gameObject.GetComponent<TextMeshPro>().text
                 = "" + item.Value.Count;
 
             // 同じ種類の持ち駒を並べる
@@ -689,7 +690,7 @@ public class GameSceneDirector : MonoBehaviour
                 // リスト内のユニットを表示
                 GameObject unit = item.Value[i].gameObject;
                 // 置く場所
-                Vector3 pos = tile.transform.position;
+                Vector3 pos = komadai.transform.position;
                 // 一旦ユニットを移動して表示する
                 unit.SetActive(true);
                 unit.transform.position = pos;
