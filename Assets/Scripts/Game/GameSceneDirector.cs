@@ -138,7 +138,8 @@ public class GameSceneDirector : MonoBehaviour
         Select,
         WaitEvolution,
         TurnChange,
-        Result
+        Result,
+        Draw
     }
 
     Mode nowMode, nextMode;
@@ -834,6 +835,11 @@ public class GameSceneDirector : MonoBehaviour
         unitctrl.Capture(player);
         captureUnits.Add(unitctrl);
         isDraw = true;
+    }
+
+    private void drawMode()
+    {
+
     }
 
     public void OnClickDraw()
