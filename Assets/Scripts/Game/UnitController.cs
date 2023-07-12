@@ -550,6 +550,14 @@ public class UnitController : MonoBehaviour
         Evolution(false);
         GetComponent<Rigidbody>().isKinematic = true;
     }
+    public void CaptureRemove(int player)
+    {
+        Player = player;
+        FieldStatus = FieldStatus.Captured;
+        Evolution(false);
+        GetComponent<Rigidbody>().isKinematic = true;
+        Destroy(this.gameObject);
+    }
 
     // ê¨
     public void Evolution(bool evolution = true)

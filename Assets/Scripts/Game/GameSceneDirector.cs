@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 using Random = UnityEngine.Random;
 
 public class GameSceneDirector : MonoBehaviour
@@ -30,18 +31,18 @@ public class GameSceneDirector : MonoBehaviour
     [SerializeField] List<GameObject> prefabUnits;
 
     // 初期配置
-    int[,] boardSetting =
-    {
-        { 4, 0, 1, 0, 0, 0, 11, 0, 14 },
-        { 5, 2, 1, 0, 0, 0, 11,13, 15 },
-        { 6, 0, 1, 0, 0, 0, 11, 0, 16 },
-        { 7, 0, 1, 0, 0, 0, 11, 0, 17 },
-        { 8, 0, 1, 0, 0, 0, 11, 0, 18 },
-        { 7, 0, 1, 0, 0, 0, 11, 0, 17 },
-        { 6, 0, 1, 0, 0, 0, 11, 0, 16 },
-        { 5, 3, 1, 0, 0, 0, 11,12, 15 },
-        { 4, 0, 1, 0, 0, 0, 11, 0, 14 },
-    };
+    //int[,] boardSetting =
+    //{
+    //    { 4, 0, 1, 0, 0, 0, 11, 0, 14 },
+    //    { 5, 2, 1, 0, 0, 0, 11,13, 15 },
+    //    { 6, 0, 1, 0, 0, 0, 11, 0, 16 },
+    //    { 7, 0, 1, 0, 0, 0, 11, 0, 17 },
+    //    { 8, 0, 1, 0, 0, 0, 11, 0, 18 },
+    //    { 7, 0, 1, 0, 0, 0, 11, 0, 17 },
+    //    { 6, 0, 1, 0, 0, 0, 11, 0, 16 },
+    //    { 5, 3, 1, 0, 0, 0, 11,12, 15 },
+    //    { 4, 0, 1, 0, 0, 0, 11, 0, 14 },
+    //};
 
     // 打ち歩詰めじゃない
     //int[,] boardSetting =
@@ -72,17 +73,26 @@ public class GameSceneDirector : MonoBehaviour
     //};
 
     // 打ち歩詰め
+    int[,] boardSetting =
+    {
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 8, 0, 0, 0,18 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 },
+    };
+    //    // 打ち歩詰め
     //int[,] boardSetting =
     //{
-    //    { 0, 0, 0, 0, 0, 1, 11, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0, 11 },
     //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
     //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
     //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
     //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
+    //    { 8, 0, 0, 0, 0, 0,  0, 0, 18 },
     //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 6, 1, 0, 11, 0,  0 },
-    //    { 0, 0, 0, 0, 0,18, 11, 0,  0 },
+    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
+    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
+    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
     //};
 
     // 打ち歩詰め
@@ -153,6 +163,9 @@ public class GameSceneDirector : MonoBehaviour
 
     // サウンド制御
     [SerializeField] SoundController sound;
+
+    // ドロー処理
+    bool isDraw = false;
 
     // Start is called before the first frame update
     void Start()
@@ -362,7 +375,8 @@ public class GameSceneDirector : MonoBehaviour
         Vector2Int oldpos = unit.Pos;
 
         // 移動先に誰かいたらとる
-        captureUnit(nowPlayer, tileindex);
+        //captureUnit(nowPlayer, tileindex);
+        captureUnitRemove(nowPlayer, tileindex);
 
         // ユニット移動
         unit.Move(tiles[tileindex], tileindex);
@@ -557,6 +571,8 @@ public class GameSceneDirector : MonoBehaviour
             }
         }
 
+
+
         // CPU処理
         if (isCpu)
         {
@@ -617,6 +633,7 @@ public class GameSceneDirector : MonoBehaviour
         // CPU状態解除
         isCpu = false;
 
+
         // 次のプレイヤーへ
         nowPlayer = GetNextPlayer(nowPlayer);
 
@@ -626,6 +643,13 @@ public class GameSceneDirector : MonoBehaviour
             turnCount++;
         }
 
+        int randNum = Random.Range(1, 4); // 1, 2, 3のいずれかの値を生成します。
+
+        if (randNum == 1) // 3分の1の確率で条件が真となります。
+        {
+            drawUnit(nowPlayer);
+        }
+        //drawUnit(nowPlayer);
         nextMode = Mode.Start;
     }
 
@@ -645,6 +669,15 @@ public class GameSceneDirector : MonoBehaviour
         if (!unit) return;
         unit.Capture(player);
         captureUnits.Add(unit);
+        units[tileindex.x, tileindex.y] = null;
+    }
+
+    void captureUnitRemove(int player, Vector2Int tileindex)
+    {
+        UnitController unit = units[tileindex.x, tileindex.y];
+        if (!unit) return;
+        unit.CaptureRemove(player);
+        //captureUnits.Add(unit);
         units[tileindex.x, tileindex.y] = null;
     }
 
@@ -768,7 +801,7 @@ public class GameSceneDirector : MonoBehaviour
     // リザルト再戦
     public void OnClickRematch()
     {
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("Demo");
     }
 
     // リザルトタイトルへ
@@ -777,5 +810,34 @@ public class GameSceneDirector : MonoBehaviour
         SceneManager.LoadScene("TitleScene");
     }
 
+    // ドローして持ち駒にする
+    public void drawUnit(int player)
+    {
+        //if (!isDraw) return; 
+        //UnitController unit = units[tileindex.x, tileindex.y];
+        //if (!unit) return;
+        // 初期化
+        // ポジション
+        Vector3 pos = new Vector3 (10, 0, 0);
+        pos.y = 0.7f;
+        int randNum = Random.Range(1, 8);
 
+        GameObject prefab = prefabUnits[randNum - 1];
+        GameObject unit = Instantiate(prefab, pos, Quaternion.Euler(90, player * 180, 0));
+        unit.AddComponent<Rigidbody>();
+
+        // タイル作成
+        GameObject tile = Instantiate(prefabTile, pos, Quaternion.identity);
+
+        UnitController unitctrl = unit.AddComponent<UnitController>();
+        unitctrl.Init(player, randNum, tile, new Vector2Int (1,1));
+        unitctrl.Capture(player);
+        captureUnits.Add(unitctrl);
+        isDraw = true;
+    }
+
+    public void OnClickDraw()
+    {
+        isDraw = true;
+    }
 }
