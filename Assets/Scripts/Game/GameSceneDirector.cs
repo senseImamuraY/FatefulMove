@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static DrawDirector;
 using static UnityEditor.PlayerSettings;
 using Random = UnityEngine.Random;
 
@@ -44,34 +45,27 @@ public class GameSceneDirector : MonoBehaviour
     //    { 4, 0, 1, 0, 0, 0, 11, 0, 14 },
     //};
 
-    // 打ち歩詰めじゃない
-    //int[,] boardSetting =
-    //{
-    //    { 0, 0, 0, 0, 0, 1, 11, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0, 11 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0,12,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  6, 0, 17 },
-    //    { 0, 0, 0, 0, 0, 0,  7, 0, 18 },
-    //};
-
     // 打ち歩詰め
     //int[,] boardSetting =
     //{
-    //    { 0, 0, 0, 0, 0, 1, 11, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0, 11 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0,12,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  6, 0, 15 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0, 18 },
+    //    { 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0},
+    //    { 8, 0, 0, 0, 0,18},
+    //    { 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0},
+    //}; 
+    //int[,] boardSetting =
+    //{
+    //    { 0, 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0, 0},
+    //    { 8, 0, 0, 0, 0,18, 0},
+    //    { 0, 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0, 0},
+    //    { 0, 0, 0, 0, 0, 0, 0},
     //};
-
     // 打ち歩詰め
     int[,] boardSetting =
     {
@@ -81,33 +75,6 @@ public class GameSceneDirector : MonoBehaviour
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 },
     };
-    //    // 打ち歩詰め
-    //int[,] boardSetting =
-    //{
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 8, 0, 0, 0, 0, 0,  0, 0, 18 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //};
-
-    // 打ち歩詰め
-    //int[,] boardSetting =
-    //{
-    //    { 0, 0, 0, 0, 0, 1, 11, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0, 11 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0, 0,  0, 0,  0 },
-    //    { 0, 0, 0, 0, 0,11,  0, 0,  0 },
-    //    { 0, 0, 0, 7, 0,11, 16, 0,  0 },
-    //    { 0, 0, 0, 0, 0,18, 11, 0,  0 },
-    //};
 
     // フィールドデータ
     Dictionary<Vector2Int, GameObject> tiles;
@@ -127,11 +94,11 @@ public class GameSceneDirector : MonoBehaviour
 
     // プレイヤーとターン
     int nowPlayer;
-    int turnCount;
     bool isCpu;
+    public int turnCount;
 
     // モード
-    enum Mode
+    public enum Mode
     {
         None,
         Start,
@@ -142,7 +109,8 @@ public class GameSceneDirector : MonoBehaviour
         Draw
     }
 
-    Mode nowMode, nextMode;
+    private Mode nowMode;
+    public Mode nextMode;
 
     // 持ち駒タイルのプレハブ
     [SerializeField] GameObject prefabUnitTile;
@@ -167,6 +135,8 @@ public class GameSceneDirector : MonoBehaviour
 
     // ドロー処理
     bool isDraw = false;
+
+    [SerializeField] DrawDirector drawDirector;
 
     // Start is called before the first frame update
     void Start()
@@ -291,6 +261,7 @@ public class GameSceneDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (Mode.Start == nowMode)
         {
             startMode();
@@ -313,6 +284,10 @@ public class GameSceneDirector : MonoBehaviour
             //}
             ////nowMode = Mode.None;
             //OnClickRematch();
+        }
+        else if (Mode.Draw == nowMode)
+        {
+            drawDirector.drawMode();
         }
 
         // モード変更
@@ -476,6 +451,13 @@ public class GameSceneDirector : MonoBehaviour
     // ターン開始
     void startMode()
     {
+
+        if (turnCount % 4 == 1)
+        {
+            nextMode = Mode.Draw;
+            return;
+        }
+
         // 勝敗がついていなければ通常モード
         nextMode = Mode.Select;
 
@@ -812,7 +794,7 @@ public class GameSceneDirector : MonoBehaviour
     }
 
     // ドローして持ち駒にする
-    public void drawUnit(int player)
+    public void drawUnit(int player, CardType cardType = CardType.Soldier)
     {
         //if (!isDraw) return; 
         //UnitController unit = units[tileindex.x, tileindex.y];
@@ -821,7 +803,23 @@ public class GameSceneDirector : MonoBehaviour
         // ポジション
         Vector3 pos = new Vector3 (10, 0, 0);
         pos.y = 0.7f;
-        int randNum = Random.Range(1, 8);
+        int randNum = 1;
+        if (cardType == CardType.Soldier)
+        {
+            randNum = 1;
+        }
+        else if (cardType == CardType.Monster)
+        {
+            randNum = Random.Range(2, 8);
+        }
+        else if(cardType == CardType.None) 
+        {
+            return;
+        }
+        else
+        {
+            return;
+        }
 
         GameObject prefab = prefabUnits[randNum - 1];
         GameObject unit = Instantiate(prefab, pos, Quaternion.Euler(90, player * 180, 0));
