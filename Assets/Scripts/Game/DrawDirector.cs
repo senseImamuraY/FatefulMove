@@ -10,7 +10,7 @@ public class DrawDirector : MonoBehaviour
     GameObject drawPanel;
 
     [SerializeField]
-    Text selectedText1, selectedText2, selectedText3;
+    Text selectedText1, selectedText2, selectedText3, sacrificeNumText;
 
     [SerializeField]
     Button soldierButton, sacrificeButton, monsterButton, predictionButton, cancelButton;
@@ -189,13 +189,18 @@ public class DrawDirector : MonoBehaviour
                 if (cardType == CardType.Monster && sacrificeNum >= 2)
                 {
                     sacrificeNum--;
+                    sacrificeNumText.text = "ê∂Ê—ÇÃêî:" + sacrificeNum;
                 }
                 else if (cardType == CardType.Monster && sacrificeNum < 2)
                 {
                     cardType = CardType.None;
                     Debug.Log("ê∂Ê—Ç™ë´ÇËÇ»Ç¢...");
                 }
-
+                else if (cardType == CardType.Sacrifice)
+                {
+                    sacrificeNum++;
+                    sacrificeNumText.text = "ê∂Ê—ÇÃêî:" + sacrificeNum;
+                }
                 gameSceneDirector.drawUnit(i, cardType);
             }
         }
@@ -237,7 +242,6 @@ public class DrawDirector : MonoBehaviour
         {
             selectedCards[nowPlayer].Add(isPredictionSelected ? CardType.PSacrifice : CardType.Sacrifice);
             selectedCardTexts[nowPlayer].Add(isPredictionSelected ? "ê∂Ê—?" : "ê∂Ê—");
-            sacrificeNum++;
             isPredictionSelected = false;
         }
     }
